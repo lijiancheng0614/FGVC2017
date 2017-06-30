@@ -21,9 +21,20 @@ https://www.kaggle.com/c/imaterialist-challenge-FGVC2017
 
 ## Usage
 
+### Preparation
+
+Install caffe and add `$CAFFE_ROOT/build/tools/` to $PATH.
+
 ### Train
 
-Run `train.sh`
+Need to train 4 models:
+
+```bash
+./train.sh dresses
+./train.sh outerwear
+./train.sh pants
+./train.sh shoe
+```
 
 ### Test
 
