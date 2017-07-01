@@ -27,13 +27,13 @@ https://www.kaggle.com/c/imaterialist-challenge-FGVC2017
 │   ├── inception_v3
 │   │   ├── dresses_solver.prototxt
 │   │   ├── dresses_train.prototxt
-│   │   ├── dresses_val.prototxt
+│   │   ├── dresses_deploy.prototxt
 │   │   └── ...
 │   └── inception_resnet_v2
 │       └── ...
 ├── download_img.py
 ├── README.md
-├── test.sh
+├── test.py
 └── train.sh
 ```
 
@@ -51,9 +51,9 @@ Run train script: `./train.sh $CATEGORY $MODEL_NAME $GPU_ID`
 ./train.sh dresses inception_v3 0
 ./train.sh outerwear inception_v3 1
 ./train.sh pants inception_v3 2
-./train.sh shoe inception_v3 3
+./train.sh shoes inception_v3 3
 ```
 
 ### Test
 
-Run `test.sh`
+Modifiy `test.py` and run.
