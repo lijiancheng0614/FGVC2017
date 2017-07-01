@@ -1,0 +1,5 @@
+log/
+data/*.txt
+data/images/
+*.caffemodel
+*.solverstate

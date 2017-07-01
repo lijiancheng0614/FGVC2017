@@ -7,12 +7,30 @@ https://www.kaggle.com/c/imaterialist-challenge-FGVC2017
 ```
 ├── data
 │   ├── images
-│   ├── dresses_list.txt
-│   ├── outerwear_list.txt
-│   ├── pants_list.txt
-│   └── shoes_list.txt
+│   │   ├── train
+│   │   ├── test
+│   │   └── val
+│   ├── README.md
+│   ├── dresses_list_train.txt
+│   └── ...
+├── log
+│   └── inception_v3
+│       └── dresses_train_*.txt
 ├── model
+│   ├── inception_v3
+│   │   ├── inception_v3.caffemodel
+│   │   └── dresses_iter_*.caffemodel
+│   ├── inception_resnet_v2
+│   │   └── ...
+│   └── README.md
 ├── prototxt
+│   ├── inception_v3
+│   │   ├── dresses_solver.prototxt
+│   │   ├── dresses_train.prototxt
+│   │   ├── dresses_val.prototxt
+│   │   └── ...
+│   └── inception_resnet_v2
+│       └── ...
 ├── download_img.py
 ├── README.md
 ├── test.sh
@@ -27,13 +45,13 @@ Install caffe and add `$CAFFE_ROOT/build/tools/` to $PATH.
 
 ### Train
 
-Need to train 4 models:
+Run train script: `./train.sh $CATEGORY $MODEL_NAME $GPU_ID`
 
 ```bash
-./train.sh dresses
-./train.sh outerwear
-./train.sh pants
-./train.sh shoe
+./train.sh dresses inception_v3 0
+./train.sh outerwear inception_v3 1
+./train.sh pants inception_v3 2
+./train.sh shoe inception_v3 3
 ```
 
 ### Test
