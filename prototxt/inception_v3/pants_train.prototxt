@@ -5,7 +5,7 @@ layer {
   top: "label_single"
   transform_param {
     mirror: true
-    crop_size: 331
+    crop_size: 229
     mean_value: 104
     mean_value: 117
     mean_value: 123
@@ -13,10 +13,10 @@ layer {
   image_data_param {
     source: "data/pants_list_train.txt"
     root_folder: "data/images/train/"
-    batch_size: 128
+    batch_size: 32
     shuffle: true
-    new_width: 384
-    new_height: 384
+    new_width: 330
+    new_height: 330
   }
   include: {
     phase: TRAIN

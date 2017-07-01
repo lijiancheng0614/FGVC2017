@@ -5,7 +5,7 @@ layer {
   top: "label_single"
   transform_param {
     mirror: true
-    crop_size: 331
+    crop_size: 299
     mean_value: 104
     mean_value: 117
     mean_value: 123
@@ -13,10 +13,10 @@ layer {
   image_data_param {
     source: "data/dresses_list_train.txt"
     root_folder: "data/images/train/"
-    batch_size: 128
+    batch_size: 32
     shuffle: true
-    new_width: 384
-    new_height: 384
+    new_width: 330
+    new_height: 330
   }
   include: {
     phase: TRAIN
@@ -4709,31 +4709,6 @@ layer {
   top: "pool_8x8_s1_drop"
   dropout_param {
     dropout_ratio: 0.2
-  }
-}
-
-layer {
-  name: "classifier"
-  type: "InnerProduct"
-  bottom: "pool_8x8_s1_drop"
-  top: "classifier"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
-  inner_product_param {
-    num_output: 1000
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
   }
 }
 
