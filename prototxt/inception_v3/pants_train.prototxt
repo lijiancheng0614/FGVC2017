@@ -11,11 +11,12 @@ layer {
     mean_value: 123
   }
   image_data_param {
-    source: "data/pants_list.txt"
-    root_folder: "data/"
-    batch_size: 256
+    source: "data/pants_list_train.txt"
+    root_folder: "data/images/train/"
+    batch_size: 128
     shuffle: true
-    label_len_vec: 10
+    new_width: 384
+    new_height: 384
   }
   include: {
     phase: TRAIN
