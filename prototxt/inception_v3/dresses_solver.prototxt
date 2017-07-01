@@ -17,6 +17,3 @@ weight_decay: 0.0005
 snapshot: 3000
 snapshot_prefix: "model/inception_v3/dresses"
 solver_mode: GPU
-
-test_iter: 1000
-test_interval: 3000
