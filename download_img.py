@@ -3,6 +3,8 @@ import json
 import time
 import subprocess
 import multiprocessing
+import numpy as np
+from PIL import Image
 import cv2
 
 def download_image(urls, storage_path):
@@ -15,11 +17,12 @@ def download_image(urls, storage_path):
                 return
             else:
                 os.remove(storage_path)
-        except:
+        except Exception as e:
+            print('ERROR: {}'.format(e))
             os.remove(storage_path)
     for url in urls:
         try:
-            subprocess.call(['wget', url, '-O', storage_path, '-t', '3'])
+            subprocess.call(['wget', url, '-O', storage_path, '-t', '3', '-T', '60'])
             try:
                 im = Image.open(storage_path)
                 im = np.array(im, dtype = np.float32)
@@ -28,10 +31,12 @@ def download_image(urls, storage_path):
                     return
                 else:
                     os.remove(storage_path)
-            except:
+            except Exception as e:
+                print('ERROR: {}'.format(e))
                 os.remove(storage_path)
-        except:
-            continue
+        except Exception as e:
+            print('ERROR: {}'.format(e))
+
 
 json_file = 'data/fgvc4_iMat.test.image.json'
 output_dir = 'data/images/test/'
@@ -51,7 +56,8 @@ def worker(start_id):
         print('{} {} {}'.format(time.ctime(), start_id, imageId_list[i]))
         download_image(urls_list[i], output_dir + imageId_list[i] + '.jpg')
 
-cores = 8
+
+cores = 32
 p = [multiprocessing.Process(target = worker, args = (i,)) for i in range(cores)]
 for i in p:
     i.start()

@@ -45,7 +45,12 @@ Install caffe and add `$CAFFE_ROOT/build/tools/` to $PATH.
 
 Download datasets by `python download_img.py`.
 
-(Kill all python process: `ps aux | grep python | grep -v grep | awk '{print $2}'| xargs kill -9`)
+Kill all related processes:
+
+```bash
+ps aux | grep python | grep -v grep | awk '{print $2}'| xargs kill -9
+ps aux | grep wget | grep -v grep | awk '{print $2}'| xargs kill -9
+```
 
 ### Train
 
