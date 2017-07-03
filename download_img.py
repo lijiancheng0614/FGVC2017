@@ -1,49 +1,53 @@
-import json
 import os
-import urllib
-from PIL import Image
-import numpy as np
-from concurrent.futures import ThreadPoolExecutor
+import json
+import time
+import urllib2
+import multiprocessing
+import cv2
 
-def download_images(urls, storage_path, index):
-	if index % 20 == 0:
-		print(index)
+def download_image(urls, storage_path):
+    if os.path.exists(storage_path):
+        try:
+            im = cv2.imread(storage_path)
+            if im is not None:
+                return
+        except:
+            os.remove(storage_path)
+    for url in urls:
+        try:
+            fd = urllib2.urlopen(url)
+            open(storage_path, 'wb').write(fd.read())
+            try:
+                im = cv2.imread(storage_path)
+                if im is not None:
+                    return
+            except:
+                os.remove(storage_path)
+        except:
+            continue
 
-	if os.path.exists(storage_path):
-		try:
-			im = Image.open(storage_path)
-			im = np.array(im, dtype = np.float32)
-			return 2
-		except:
-			os.remove(storage_path)
+json_file = 'data/fgvc4_iMat.test.image.json'
+output_dir = 'data/images/test/'
+if not os.path.isdir(output_dir):
+    os.makedirs(output_dir)
 
-	for url in urls:
-		try:
-			f = urllib.urlopen(url) 
-			with open(storage_path, "wb") as code:
-   				code.write(f.read())
-   			try:
-				im = Image.open(storage_path)
-				im = np.array(im, dtype = np.float32)
-				return 1
-			except:
-				os.remove(storage_path)
-				continue
-		except:
-				continue
+fd = open(json_file)
+data = json.load(fd)
+fd.close()
 
-#fgvc4_iMat.test.image
-#fgvc4_iMat.train.data
-#fgvc4_iMat.validation.data
+urls_list = [item['url'] for item in data['images']]
+imageId_list = [item['imageId'] for item in data['images']]
+tot = len(urls_list)
 
-with open('fgvc4_iMat.test.image.json', 'r') as f:
-	data = json.load(f)
-	
-	urls_list = [item['url'] for item in data['images']]
-	path_names = ["data/test_data/" + item['imageId'] + ".jpg" for item in data['images']]
-	indexes = [i for i in range(1, len(path_names)+1)]
+def worker(start_id):
+    for i in range(start_id, tot, cores):
+        print('{} {} {}'.format(time.ctime(), start_id, imageId_list[i]))
+        download_image(urls_list[i], output_dir + imageId_list[i] + '.jpg')
 
-	with ThreadPoolExecutor(128) as executor:
-		executor.map(download_images, urls_list, path_names, indexes)
+cores = 8
+p = [multiprocessing.Process(target = worker, args = (i,)) for i in range(cores)]
+for i in p:
+    i.start()
 
-print("finish!")
+while len(os.listdir(output_dir)) < tot:
+    pass

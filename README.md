@@ -43,6 +43,8 @@ https://www.kaggle.com/c/imaterialist-challenge-FGVC2017
 
 Install caffe and add `$CAFFE_ROOT/build/tools/` to $PATH.
 
+Download datasets by `python download_img.py`.
+
 ### Train
 
 Run train script: `./train.sh $CATEGORY $MODEL_NAME $GPU_ID`
