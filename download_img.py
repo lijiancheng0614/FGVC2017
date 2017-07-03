@@ -1,26 +1,33 @@
 import os
 import json
 import time
-import urllib2
+import subprocess
 import multiprocessing
 import cv2
 
 def download_image(urls, storage_path):
     if os.path.exists(storage_path):
         try:
+            im = Image.open(storage_path)
+            im = np.array(im, dtype = np.float32)
             im = cv2.imread(storage_path)
             if im is not None:
                 return
+            else:
+                os.remove(storage_path)
         except:
             os.remove(storage_path)
     for url in urls:
         try:
-            fd = urllib2.urlopen(url)
-            open(storage_path, 'wb').write(fd.read())
+            subprocess.call(['wget', url, '-O', storage_path, '-t', '3'])
             try:
+                im = Image.open(storage_path)
+                im = np.array(im, dtype = np.float32)
                 im = cv2.imread(storage_path)
                 if im is not None:
                     return
+                else:
+                    os.remove(storage_path)
             except:
                 os.remove(storage_path)
         except:

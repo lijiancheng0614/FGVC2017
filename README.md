@@ -45,6 +45,8 @@ Install caffe and add `$CAFFE_ROOT/build/tools/` to $PATH.
 
 Download datasets by `python download_img.py`.
 
+(Kill all python process: `ps aux | grep python | grep -v grep | awk '{print $2}'| xargs kill -9`)
+
 ### Train
 
 Run train script: `./train.sh $CATEGORY $MODEL_NAME $GPU_ID`
