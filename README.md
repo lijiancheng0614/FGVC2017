@@ -41,22 +41,23 @@ https://www.kaggle.com/c/imaterialist-challenge-FGVC2017
 
 ### Preparation
 
-Install caffe and add `$CAFFE_ROOT/build/tools/` to $PATH.
+- Environment
 
-Download datasets by `python download_img.py`.
+    Install caffe and add `$CAFFE_ROOT/build/tools/` to $PATH.
 
-Kill all related processes:
+    Python 2.7
 
-```bash
-ps aux | grep python | grep -v grep | awk '{print $2}' | xargs kill -9
-ps aux | grep wget | grep -v grep | awk '{print $2}' | xargs kill -9
-```
+- Dataset
 
-Watch process status and kill stuck ones:
+    https://github.com/visipedia/imat_comp
 
-```bash
-ps aux | grep wget | grep -v grep | awk '{print $2,$9,$14}'
-```
+    - Download the dataset files here:
+
+        [iMaterialist dataset [8.0GB]](https://storage.googleapis.com/imat/imat_dataset2017.tar.gz)
+
+        Number of missing images: 1635 / 42029 (3.89%) in training, 298 / 8432 (3.53%) in validation and 1321 / 33726 (3.92%) in test set.
+
+    - Or download datasets by `python download_img.py`.
 
 ### Train
 
