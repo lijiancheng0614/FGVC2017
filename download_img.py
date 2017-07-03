@@ -63,4 +63,20 @@ for i in p:
     i.start()
 
 while len(os.listdir(output_dir)) < tot:
-    pass
+    p = subprocess.Popen('ps aux | grep wget | grep -v grep | awk \'{print $2,$9}\'',
+        shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+    out = out.split('\n')
+    for line in out:
+        if line == '':
+            continue
+        pid, start_time = line.split()
+        try:
+            h0, m0 = start_time.split(':')
+            h0, m0 = int(h0), int(m0)
+            now = time.localtime(time.time())
+            h, m = now.tm_hour, now.tm_min
+            if h * 60 + m - (h0 * 60 + m0) > 5:
+                _ = subprocess.call(['kill', pid])
+        except:
+            pass
