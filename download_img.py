@@ -7,6 +7,11 @@ import numpy as np
 from PIL import Image
 import cv2
 
+TIMEOUT = 60
+TIMEOUT_DELTA = 60
+TIME_RETRY = 3
+cores = 32
+
 def download_image(urls, storage_path):
     if os.path.exists(storage_path):
         try:
@@ -22,7 +27,7 @@ def download_image(urls, storage_path):
             os.remove(storage_path)
     for url in urls:
         try:
-            subprocess.call(['wget', url, '-O', storage_path, '-t', '3', '-T', '60'])
+            subprocess.call(['wget', url, '-O', storage_path, '-t', str(TIME_RETRY), '-T', str(TIMEOUT)])
             try:
                 im = Image.open(storage_path)
                 im = np.array(im, dtype = np.float32)
@@ -56,27 +61,27 @@ def worker(start_id):
         print('{} {} {}'.format(time.ctime(), start_id, imageId_list[i]))
         download_image(urls_list[i], output_dir + imageId_list[i] + '.jpg')
 
-
-cores = 32
-p = [multiprocessing.Process(target = worker, args = (i,)) for i in range(cores)]
-for i in p:
-    i.start()
-
 while len(os.listdir(output_dir)) < tot:
     p = subprocess.Popen('ps aux | grep wget | grep -v grep | awk \'{print $2,$9}\'',
         shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
-    out = out.split('\n')
-    for line in out:
-        if line == '':
-            continue
-        pid, start_time = line.split()
-        try:
-            h0, m0 = start_time.split(':')
-            h0, m0 = int(h0), int(m0)
-            now = time.localtime(time.time())
-            h, m = now.tm_hour, now.tm_min
-            if h * 60 + m - (h0 * 60 + m0) > 5:
-                _ = subprocess.call(['kill', pid])
-        except:
-            pass
+    out = filter(None, out.split('\n'))
+    if len(out) == 0:
+        p = [multiprocessing.Process(target = worker, args = (i,)) for i in range(cores)]
+        for i in p:
+            i.start()
+        TIMEOUT += TIMEOUT_DELTA
+    else:
+        for line in out:
+            if line == '':
+                continue
+            pid, start_time = line.split()
+            try:
+                h0, m0 = start_time.split(':')
+                h0, m0 = int(h0), int(m0)
+                now = time.localtime(time.time())
+                h, m = now.tm_hour, now.tm_min
+                if h * 60 + m - (h0 * 60 + m0) > TIMEOUT / 60 * TIME_RETRY:
+                    _ = subprocess.call(['kill', pid])
+            except:
+                pass
