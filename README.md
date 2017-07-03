@@ -48,8 +48,14 @@ Download datasets by `python download_img.py`.
 Kill all related processes:
 
 ```bash
-ps aux | grep python | grep -v grep | awk '{print $2}'| xargs kill -9
-ps aux | grep wget | grep -v grep | awk '{print $2}'| xargs kill -9
+ps aux | grep python | grep -v grep | awk '{print $2}' | xargs kill -9
+ps aux | grep wget | grep -v grep | awk '{print $2}' | xargs kill -9
+```
+
+Watch process status and kill stuck ones:
+
+```bash
+ps aux | grep wget | grep -v grep | awk '{print $2,$9,$14}'
 ```
 
 ### Train
