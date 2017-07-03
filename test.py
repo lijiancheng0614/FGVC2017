@@ -5,23 +5,29 @@ import os
 import numpy as np
 from PIL import Image
 
-category = 'dresses'
-model_name = 'inception_v3'
-gpu_id = 0
-image_root = 'data/images/val'
+category = sys.argv[1]
+model_name = sys.argv[2]
+model_iteration = sys.argv[3]
+phase = sys.argv[4]
+gpu_id = int(sys.argv[5])
+image_root = 'data/images/{}'.format(phase)
 prototxt = 'prototxt/{}/{}_deploy.prototxt'.format(model_name, category)
-model = 'model/{}/{}_iter_3000.caffemodel'.format(model_name, category)
-test_list = 'data/{}_list_val.txt'.format(category)
+model = 'model/{}/{}_iter_{}.caffemodel'.format(model_name, category, model_iteration)
+test_list = 'data/{}_list_{}.txt'.format(category, phase)
 if category == 'dresses':
     class_names = ['age', 'collar', 'color', 'decoration', 'length', 'material', 'occasion', 'pattern', 'silhouette', 'sleeve_length']
+    gt_map = [0, 1, 2, 3, 5, 6, 7, 8, 9, 10]
     # ignore 'gender'
 elif category == 'outerwear':
     class_names = ['age', 'closure_type', 'collar', 'color', 'gender', 'length', 'material', 'pattern', 'sleeve_length', 'type']
+    gt_map = range(10)
 elif category == 'pants':
     class_names = ['age', 'color', 'decoration', 'fit', 'gender', 'length', 'material', 'pattern', 'type']
+    gt_map = [0, 1, 2, 3, 5, 6, 7, 9]
     # ignore 'rise_type'
 elif category == 'shoe':
     class_names = ['age', 'back_counter_type', 'closure_type', 'color', 'decoration', 'flat_type', 'gender', 'heel_type', 'material', 'toe_shape', 'type', 'up_height']
+    gt_map = [0, 1, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13]
     # ignore 'boot_type', 'pump_type'
 
 caffe.set_device(gpu_id)
@@ -54,18 +60,24 @@ for line in lines[1:]:
     # print(idx)
     ground_truth = [int(i) for i in line[1:]]
     image_path = os.path.join(image_root, idx)
-    out = test(image_path, net)
-    for idx, name in enumerate(class_names):
-        label = ground_truth[idx]
-        if label == -1:
-            continue
-        if label not in tot[name]:
-            tot[name][label] = 0
-            correct[name][label] = 0
-        tot[name][label] += 1
-        if label == out[idx]:
-            correct[name][label] += 1
+    try:
+        out = test(image_path, net)
+        for idx, name in enumerate(class_names):
+            label = ground_truth[gt_map[idx]]
+            if label == -1:
+                continue
+            if label not in tot[name]:
+                tot[name][label] = 0
+                correct[name][label] = 0
+            tot[name][label] += 1
+            if label == out[idx]:
+                correct[name][label] += 1
+    except Exception as e:
+        print('ERROR: {}'.format(e))
+        print(image_path)
 
+print('{} {} iter_{} {}'.format(category, model_name, model_iteration, test_list))
+print('=' * 10)
 for name in class_names:
     n_correct = sum(correct[name].values())
     n_tot = sum(tot[name].values())

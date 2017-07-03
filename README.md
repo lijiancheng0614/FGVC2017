@@ -58,4 +58,10 @@ Run train script: `./train.sh $CATEGORY $MODEL_NAME $GPU_ID`
 
 ### Test
 
-Modifiy `test.py` and run.
+Run train script: `python test.py $CATEGORY $MODEL_NAME $MODEL_ITERATION $PHASE $GPU_ID`
+
+```bash
+python test.py dresses inception_v3 33000 train 0
+python test.py outerwear inception_v3 42000 val 1
+...
+```
