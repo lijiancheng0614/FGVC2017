@@ -23,9 +23,9 @@ elif category == 'outerwear':
     gt_map = range(10)
 elif category == 'pants':
     class_names = ['age', 'color', 'decoration', 'fit', 'gender', 'length', 'material', 'pattern', 'type']
-    gt_map = [0, 1, 2, 3, 5, 6, 7, 9]
+    gt_map = [0, 1, 2, 3, 4, 5, 6, 7, 9]
     # ignore 'rise_type'
-elif category == 'shoe':
+elif category == 'shoes':
     class_names = ['age', 'back_counter_type', 'closure_type', 'color', 'decoration', 'flat_type', 'gender', 'heel_type', 'material', 'toe_shape', 'type', 'up_height']
     gt_map = [0, 1, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13]
     # ignore 'boot_type', 'pump_type'
