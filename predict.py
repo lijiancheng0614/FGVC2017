@@ -63,9 +63,9 @@ for line in lines:
     if os.path.exists(image_path):
         for i, category in enumerate(categories):
             try:
-                out = test(image_path, nets[i], class_names[i])
-                for k, idx in enumerate(label_id):
-                    output[task_id_label_map[idx][0]] = task_id_label_map[idx][out[k] + 1]
+                out = test(image_path, class_names[i], nets[i])
+                for k, task_idx in enumerate(label_id[i]):
+                    output[task_id_label_map[task_idx][0]] = task_id_label_map[task_idx][out[k] + 1]
             except Exception as e:
                 print('ERROR: {}'.format(e))
                 print(image_path)
