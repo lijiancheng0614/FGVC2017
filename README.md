@@ -82,6 +82,14 @@ Run train script: `./train.sh $CATEGORY $MODEL_NAME $GPU_ID`
 
 - Run predict script for submission
 
+    Predict all categories serially.
+
     ```bash
     python predict.py inception_v3 33000 0
+    ```
+
+    Predict all samples in a category.
+    ```bash
+    python predict_single.py dresses inception_v3 150000 0
+    python submission.py
     ```
