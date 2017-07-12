@@ -1,8 +1,8 @@
 layer {
   name: "data"
-  type: "ImageData"
+  type: "ImageMultiLabelData"
   top: "data"
-  top: "label"
+  top: "label_single"
   transform_param {
     mirror: false
     crop_size: 299
@@ -11,8 +11,8 @@ layer {
     mean_value: 123
   }
   image_data_param {
-    source: "data/list_test.txt"
-    root_folder: "data/images/test/"
+    source: "data/outerwear_list_val.txt"
+    root_folder: "data/images/val/"
     batch_size: 1
     shuffle: false
     new_width: 330
@@ -22,7 +22,7 @@ layer {
 layer {
   name: "silence"
   type: "Silence"
-  bottom: "label"
+  bottom: "label_single"
 }
 
 layer {
@@ -4709,7 +4709,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 2
+    num_output: 3
     weight_filler {
       type: "xavier"
     }
@@ -4727,6 +4727,37 @@ layer {
 }
 
 layer {
+  name: "classifier_closure_type"
+  type: "InnerProduct"
+  bottom: "pool_8x8_s1_drop"
+  top: "classifier_closure_type"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 7
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "prob_closure_type"
+  type: "Softmax"
+  bottom: "classifier_closure_type"
+  top: "prob_closure_type"
+}
+
+layer {
   name: "classifier_collar"
   type: "InnerProduct"
   bottom: "pool_8x8_s1_drop"
@@ -4740,7 +4771,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 17
+    num_output: 14
     weight_filler {
       type: "xavier"
     }
@@ -4771,7 +4802,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 36
+    num_output: 31
     weight_filler {
       type: "xavier"
     }
@@ -4789,10 +4820,10 @@ layer {
 }
 
 layer {
-  name: "classifier_decoration"
+  name: "classifier_gender"
   type: "InnerProduct"
   bottom: "pool_8x8_s1_drop"
-  top: "classifier_decoration"
+  top: "classifier_gender"
   param {
     lr_mult: 1
     decay_mult: 1
@@ -4802,7 +4833,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 27
+    num_output: 2
     weight_filler {
       type: "xavier"
     }
@@ -4813,10 +4844,10 @@ layer {
   }
 }
 layer {
-  name: "prob_decoration"
+  name: "prob_gender"
   type: "Softmax"
-  bottom: "classifier_decoration"
-  top: "prob_decoration"
+  bottom: "classifier_gender"
+  top: "prob_gender"
 }
 
 layer {
@@ -4833,7 +4864,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 12
+    num_output: 2
     weight_filler {
       type: "xavier"
     }
@@ -4864,7 +4895,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 23
+    num_output: 44
     weight_filler {
       type: "xavier"
     }
@@ -4882,37 +4913,6 @@ layer {
 }
 
 layer {
-  name: "classifier_occasion"
-  type: "InnerProduct"
-  bottom: "pool_8x8_s1_drop"
-  top: "classifier_occasion"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
-  inner_product_param {
-    num_output: 37
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "prob_occasion"
-  type: "Softmax"
-  bottom: "classifier_occasion"
-  top: "prob_occasion"
-}
-
-layer {
   name: "classifier_pattern"
   type: "InnerProduct"
   bottom: "pool_8x8_s1_drop"
@@ -4926,7 +4926,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 8
+    num_output: 16
     weight_filler {
       type: "xavier"
     }
@@ -4944,37 +4944,6 @@ layer {
 }
 
 layer {
-  name: "classifier_silhouette"
-  type: "InnerProduct"
-  bottom: "pool_8x8_s1_drop"
-  top: "classifier_silhouette"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
-  inner_product_param {
-    num_output: 17
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
-}
-layer {
-  name: "prob_silhouette"
-  type: "Softmax"
-  bottom: "classifier_silhouette"
-  top: "prob_silhouette"
-}
-
-layer {
   name: "classifier_sleeve_length"
   type: "InnerProduct"
   bottom: "pool_8x8_s1_drop"
@@ -4988,7 +4957,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 5
+    num_output: 3
     weight_filler {
       type: "xavier"
     }
@@ -5003,4 +4972,35 @@ layer {
   type: "Softmax"
   bottom: "classifier_sleeve_length"
   top: "prob_sleeve_length"
+}
+
+layer {
+  name: "classifier_type"
+  type: "InnerProduct"
+  bottom: "pool_8x8_s1_drop"
+  top: "classifier_type"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 13
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "prob_type"
+  type: "Softmax"
+  bottom: "classifier_type"
+  top: "prob_type"
 }

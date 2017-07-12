@@ -42,7 +42,7 @@ def test(class_names, net):
     return out
 
 fd = open(test_list)
-lines = [line.strip() for line in fd]
+lines = [line.split()[0] for line in fd]
 fd.close()
 fd = open(task_id_label_map_path)
 task_id_label_map = [map(int, line.split()) for line in fd]

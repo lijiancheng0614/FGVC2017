@@ -1,8 +1,8 @@
 layer {
   name: "data"
-  type: "ImageMultiLabelData"
+  type: "ImageData"
   top: "data"
-  top: "label_single"
+  top: "label"
   transform_param {
     mirror: false
     crop_size: 299
@@ -11,8 +11,8 @@ layer {
     mean_value: 123
   }
   image_data_param {
-    source: "data/pants_list_val.txt"
-    root_folder: "data/images/val/"
+    source: "data/list_test.txt"
+    root_folder: "data/images/test/"
     batch_size: 1
     shuffle: false
     new_width: 330
@@ -22,7 +22,7 @@ layer {
 layer {
   name: "silence"
   type: "Silence"
-  bottom: "label_single"
+  bottom: "label"
 }
 
 layer {

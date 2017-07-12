@@ -11,7 +11,7 @@ model_iteration = sys.argv[3]
 phase = sys.argv[4]
 gpu_id = int(sys.argv[5])
 image_root = 'data/images/{}'.format(phase)
-prototxt = 'prototxt/{}/{}_deploy.prototxt'.format(model_name, category)
+prototxt = 'prototxt/{}/{}_val.prototxt'.format(model_name, category)
 model = 'model/{}/{}_iter_{}.caffemodel'.format(model_name, category, model_iteration)
 test_list = 'data/{}_list_{}.txt'.format(category, phase)
 if category == 'dresses':
