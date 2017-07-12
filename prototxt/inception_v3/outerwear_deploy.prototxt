@@ -1,10 +1,30 @@
-input: "data"
-input_shape {
-  dim: 1
-  dim: 3
-  dim: 299
-  dim: 299
+layer {
+  name: "data"
+  type: "ImageMultiLabelData"
+  top: "data"
+  top: "label_single"
+  transform_param {
+    mirror: false
+    crop_size: 299
+    mean_value: 104
+    mean_value: 117
+    mean_value: 123
+  }
+  image_data_param {
+    source: "data/outerwear_list_val.txt"
+    root_folder: "data/images/val/"
+    batch_size: 1
+    shuffle: false
+    new_width: 330
+    new_height: 330
+  }
 }
+layer {
+  name: "silence"
+  type: "Silence"
+  bottom: "label_single"
+}
+
 layer {
   name: "conv1_3x3_s2"
   type: "Convolution"

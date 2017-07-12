@@ -93,3 +93,9 @@ Run train script: `./train.sh $CATEGORY $MODEL_NAME $GPU_ID`
     python predict_single.py dresses inception_v3 150000 0
     python submission.py
     ```
+
+- Run test_iter script: `python test_iter.py $CATEGORY $MODEL_NAME $MODEL_ITERATION_END $PHASE $GPU_ID`
+
+    ```bash
+    python test_iter.py dresses inception_v3 6000 val 0
+    ```

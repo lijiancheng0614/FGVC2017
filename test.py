@@ -33,13 +33,7 @@ elif category == 'shoes':
 caffe.set_device(gpu_id)
 caffe.set_mode_gpu()
 
-def test(image_path, net):
-    transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
-    transformer.set_transpose('data', (2,0,1))
-    transformer.set_raw_scale('data', 255)
-    transformer.set_channel_swap('data', (2,1,0))
-    image = caffe.io.load_image(image_path)
-    net.blobs['data'].data[...] = transformer.preprocess('data', image)
+def test(net):
     _ = net.forward()
     out = list()
     for name in class_names:
@@ -57,11 +51,11 @@ correct = {name : dict() for name in class_names}
 for line in lines[1:]:
     line = line.split()
     idx = line[0]
-    # print(idx)
+    print(idx)
     ground_truth = [int(i) for i in line[1:]]
     image_path = os.path.join(image_root, idx)
     try:
-        out = test(image_path, net)
+        out = test(net)
         for idx, name in enumerate(class_names):
             label = ground_truth[gt_map[idx]]
             if label == -1:

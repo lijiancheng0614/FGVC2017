@@ -26,21 +26,15 @@ label_id = {'dresses':[0, 1, 2, 3, 5, 6, 7, 8, 9, 10], # ignore 'gender'
     'pants':[21, 22, 23, 24, 25, 26, 27, 28, 30], # ignore 'rise_type'
     'shoes':[31, 32, 34, 35, 36, 37, 38, 39, 40, 42, 43, 44]}# ignore 'boot_type', 'pump_type'
 
-all_label_id = {'dresses':range(0, 11), # 11ge
-    'outerwear':range(11, 21),#10ge
-    'pants':range(21, 31), # 10ge
-    'shoes':range(31, 45)}# 14ge 
+all_label_id = {'dresses':range(0, 11),
+    'outerwear':range(11, 21),
+    'pants':range(21, 31),
+    'shoes':range(31, 45)}
 
 caffe.set_device(gpu_id)
 caffe.set_mode_gpu()
 
-def test(image_path, class_names, net):
-    transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
-    transformer.set_transpose('data', (2,0,1))
-    transformer.set_raw_scale('data', 255)
-    transformer.set_channel_swap('data', (2,1,0))
-    image = caffe.io.load_image(image_path)
-    net.blobs['data'].data[...] = transformer.preprocess('data', image)
+def test(class_names, net):
     _ = net.forward()
     out = list()
     for name in class_names:
@@ -66,13 +60,13 @@ for line in lines:
     image_path = os.path.join(image_root, line)
     output = [0 for i in range(num_task)]
     for task_idx in all_label_id[category]:
-        output[task_id_label_map[task_idx][0]-1] = task_id_label_map[task_idx][1]
+        output[task_id_label_map[task_idx][0] - 1] = task_id_label_map[task_idx][1]
 
     if os.path.exists(image_path):
         try:
-            out = test(image_path, class_names[category], net)
+            out = test(class_names[category], net)
             for k, task_idx in enumerate(label_id[category]):
-                output[task_id_label_map[task_idx][0]-1] = task_id_label_map[task_idx][out[k] + 1]
+                output[task_id_label_map[task_idx][0] - 1] = task_id_label_map[task_idx][out[k] + 1]
         except Exception as e:
             print('ERROR: {}'.format(e))
             print(image_path)
